@@ -18,7 +18,15 @@
       <span class="stage">النسخة الأولية · سجل يدوي</span>
     </header>
 
+    <nav class="main-nav" aria-label="أقسام النظام">
+      <button class="nav-item active" type="button" data-view="devices">الأجهزة</button>
+      <button class="nav-item" type="button" data-view="users">المستخدمون والصلاحيات</button>
+      <button class="nav-item" type="button" data-view="activity">سجل العمليات</button>
+      <button class="nav-item" type="button" data-view="subscription">اشتراك الشركة</button>
+    </nav>
+
     <main>
+      <section class="view active" id="devices-view">
       <section class="hero">
         <p class="eyebrow">إدارة منظمة وآمنة</p>
         <h1>سجل أجهزة الشبكة</h1>
@@ -79,6 +87,26 @@
             </table>
           </div>
         </article>
+      </section>
+      </section>
+
+      <section class="view" id="users-view">
+        <section class="hero compact"><p class="eyebrow">إدارة الفريق</p><h1>المستخدمون والصلاحيات</h1><p>إعداد محلي أولي للمستخدمين؛ لا توجد حسابات دخول أو إرسال دعوات حتى نجهز الخادم الآمن.</p></section>
+        <section class="layout">
+          <article class="card form-card"><h2>إضافة مستخدم</h2><form id="user-form"><label for="user-name">الاسم</label><input id="user-name" required maxlength="80" placeholder="مثال: أحمد محمد" /><label for="user-role">الصلاحية</label><select id="user-role"><option value="مشاهد">مشاهد</option><option value="فني">فني</option><option value="مدير">مدير</option><option value="مالك">مالك</option></select><button class="primary full" type="submit">إضافة المستخدم</button></form></article>
+          <article class="card inventory"><div class="section-heading"><div><h2>فريق العمل</h2><p id="user-count">لا يوجد مستخدمون بعد</p></div></div><div id="users-empty" class="empty-state">أضف أول مستخدم ليظهر هنا.</div><div class="table-wrap"><table id="users-table" class="hidden"><thead><tr><th>الاسم</th><th>الصلاحية</th><th>الإجراء</th></tr></thead><tbody id="user-list"></tbody></table></div></article>
+        </section>
+      </section>
+
+      <section class="view" id="activity-view">
+        <section class="hero compact"><p class="eyebrow">شفافية العمل</p><h1>سجل العمليات</h1><p>يوثق هذا السجل التغييرات التي تجري داخل النسخة المحلية.</p></section>
+        <article class="card inventory"><div class="section-heading"><div><h2>آخر العمليات</h2><p>لا تُسجل أي اتصالات شبكية في هذه المرحلة.</p></div><button class="secondary" id="clear-activity" type="button">مسح السجل المحلي</button></div><div id="activity-empty" class="empty-state">لا توجد عمليات مسجلة بعد.</div><div class="table-wrap"><table id="activity-table" class="hidden"><thead><tr><th>الوقت</th><th>العملية</th><th>التفاصيل</th></tr></thead><tbody id="activity-list"></tbody></table></div></article>
+      </section>
+
+      <section class="view" id="subscription-view">
+        <section class="hero compact"><p class="eyebrow">بوابة المالك</p><h1>اشتراك الشركة</h1><p>واجهة الاشتراك جاهزة؛ الدفع الإلكتروني وتفعيل الخطة سيُربطان لاحقًا بخدمة المالك.</p></section>
+        <section class="subscription-grid"><article class="card"><p class="stat-label">الخطة الحالية</p><strong class="stat-value">تجريبية</strong><p>لا توجد مدفوعات أو فواتير في النسخة المحلية.</p></article><article class="card"><p class="stat-label">حالة الحساب</p><strong class="stat-value success">نشط محليًا</strong><p>الحالة ستُدار من لوحة مالك Hesbah بعد الربط.</p></article><article class="card"><p class="stat-label">حماية الشبكة</p><strong class="stat-value">غير مرتبط</strong><p>تم تأجيل الوصول للخادم والأجهزة عمدًا.</p></article></section>
+        <article class="card safe-note"><h2>حدود المرحلة الحالية</h2><p>يمكنك الآن تنظيم السجل والفريق والمتابعة محليًا. ربط الأجهزة، قراءة حالتها، فتح واجهاتها، أو إرسال أوامر إدارية لن يبدأ قبل مراجعة الخادم والصلاحيات وسجل التدقيق المركزي.</p></article>
       </section>
     </main>
     <footer>Powered by Hesbah</footer>

@@ -1,5 +1,7 @@
 const storageKey = "hesbah-devices-v1";
 const companyStorageKey = "hesbah-company-v1";
+const usersStorageKey = "hesbah-users-v1";
+const activityStorageKey = "hesbah-activity-v1";
 const form = document.querySelector("#device-form");
 const idField = document.querySelector("#device-id");
 const nameField = document.querySelector("#device-name");
@@ -16,11 +18,29 @@ const search = document.querySelector("#search");
 const companyForm = document.querySelector("#company-form");
 const companyName = document.querySelector("#company-name");
 const brandName = document.querySelector(".brand strong");
+const navItems = document.querySelectorAll(".nav-item");
+const views = document.querySelectorAll(".view");
+const userForm = document.querySelector("#user-form");
+const userName = document.querySelector("#user-name");
+const userRole = document.querySelector("#user-role");
+const userList = document.querySelector("#user-list");
+const usersTable = document.querySelector("#users-table");
+const usersEmpty = document.querySelector("#users-empty");
+const userCount = document.querySelector("#user-count");
+const activityList = document.querySelector("#activity-list");
+const activityTable = document.querySelector("#activity-table");
+const activityEmpty = document.querySelector("#activity-empty");
+const clearActivity = document.querySelector("#clear-activity");
 
 let devices = JSON.parse(localStorage.getItem(storageKey) || "[]");
 let company = localStorage.getItem(companyStorageKey) || "";
+let users = JSON.parse(localStorage.getItem(usersStorageKey) || "[]");
+let activity = JSON.parse(localStorage.getItem(activityStorageKey) || "[]");
 const persist = () => localStorage.setItem(storageKey, JSON.stringify(devices));
+const persistUsers = () => localStorage.setItem(usersStorageKey, JSON.stringify(users));
+const persistActivity = () => localStorage.setItem(activityStorageKey, JSON.stringify(activity));
 const renderCompany = () => { companyName.value = company; brandName.textContent = company || "Hesbah"; };
+function logActivity(action, details) { activity.unshift({ id: crypto.randomUUID(), action, details, at: new Date().toLocaleString("ar-EG") }); activity = activity.slice(0, 100); persistActivity(); renderActivity(); }
 const resetForm = () => { form.reset(); idField.value = ""; title.textContent = "إضافة جهاز"; cancel.classList.add("hidden"); };
 
 function render() {
@@ -33,7 +53,7 @@ function render() {
     row.querySelector(".type").textContent = device.type;
     row.querySelector(".ip").textContent = device.ip;
     row.querySelector(".edit").onclick = () => { idField.value = device.id; nameField.value = device.name; typeField.value = device.type; ipField.value = device.ip; title.textContent = "تعديل جهاز"; cancel.classList.remove("hidden"); nameField.focus(); };
-    row.querySelector(".delete").onclick = () => { if (confirm(`حذف الجهاز «${device.name}» من السجل؟`)) { devices = devices.filter(d => d.id !== device.id); persist(); render(); } };
+    row.querySelector(".delete").onclick = () => { if (confirm(`حذف الجهاز «${device.name}» من السجل؟`)) { devices = devices.filter(d => d.id !== device.id); persist(); logActivity("حذف جهاز", device.name); render(); } };
     list.append(row);
   });
   const suffix = devices.length === 1 ? "جهاز واحد" : `${devices.length} أجهزة`;
@@ -49,12 +69,30 @@ form.addEventListener("submit", event => {
   const duplicate = devices.some(d => d.ip === entry.ip && d.id !== entry.id);
   if (duplicate && !confirm("هذا العنوان مسجل بالفعل. هل تريد المتابعة؟")) return;
   const at = devices.findIndex(d => d.id === entry.id);
-  at === -1 ? devices.unshift(entry) : devices[at] = entry;
+  const isNew = at === -1;
+  isNew ? devices.unshift(entry) : devices[at] = entry;
   persist(); resetForm(); render();
+  logActivity(isNew ? "إضافة جهاز" : "تعديل جهاز", entry.name);
 });
 cancel.onclick = resetForm;
 search.addEventListener("input", render);
-companyForm.addEventListener("submit", event => { event.preventDefault(); company = companyName.value.trim(); localStorage.setItem(companyStorageKey, company); renderCompany(); });
+companyForm.addEventListener("submit", event => { event.preventDefault(); company = companyName.value.trim(); localStorage.setItem(companyStorageKey, company); renderCompany(); logActivity("تحديث اسم الشركة", company || "Hesbah"); });
+function renderUsers() {
+  userList.replaceChildren();
+  users.forEach(user => { const row = document.createElement("tr"); row.innerHTML = `<td></td><td></td><td><button class="link danger" type="button">حذف</button></td>`; row.children[0].textContent = user.name; row.children[1].textContent = user.role; row.querySelector("button").onclick = () => { if (confirm(`حذف المستخدم «${user.name}»؟`)) { users = users.filter(item => item.id !== user.id); persistUsers(); logActivity("حذف مستخدم", user.name); renderUsers(); } }; userList.append(row); });
+  userCount.textContent = users.length ? `${users.length} مستخدمين` : "لا يوجد مستخدمون بعد";
+  usersTable.classList.toggle("hidden", users.length === 0); usersEmpty.classList.toggle("hidden", users.length !== 0);
+}
+function renderActivity() {
+  activityList.replaceChildren();
+  activity.forEach(item => { const row = document.createElement("tr"); [item.at, item.action, item.details].forEach(value => { const cell = document.createElement("td"); cell.textContent = value; row.append(cell); }); activityList.append(row); });
+  activityTable.classList.toggle("hidden", activity.length === 0); activityEmpty.classList.toggle("hidden", activity.length !== 0);
+}
+userForm.addEventListener("submit", event => { event.preventDefault(); const user = { id: crypto.randomUUID(), name: userName.value.trim(), role: userRole.value }; users.unshift(user); persistUsers(); userForm.reset(); logActivity("إضافة مستخدم", `${user.name} — ${user.role}`); renderUsers(); });
+clearActivity.onclick = () => { if (confirm("مسح كل سجل العمليات المحلي؟")) { activity = []; persistActivity(); renderActivity(); } };
+navItems.forEach(item => item.addEventListener("click", () => { navItems.forEach(button => button.classList.toggle("active", button === item)); views.forEach(view => view.classList.toggle("active", view.id === `${item.dataset.view}-view`)); window.scrollTo({ top: 0, behavior: "smooth" }); }));
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
 renderCompany();
 render();
+renderUsers();
+renderActivity();
