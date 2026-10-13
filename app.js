@@ -25,6 +25,7 @@ const userName = document.querySelector("#user-name");
 const subscriberPlan = document.querySelector("#subscriber-plan");
 const pppoeName = document.querySelector("#pppoe-name");
 const routerType = document.querySelector("#router-type");
+const subscriberStatus = document.querySelector("#subscriber-status");
 const userList = document.querySelector("#user-list");
 const usersTable = document.querySelector("#users-table");
 const usersEmpty = document.querySelector("#users-empty");
@@ -81,7 +82,8 @@ search.addEventListener("input", render);
 companyForm.addEventListener("submit", event => { event.preventDefault(); company = companyName.value.trim(); localStorage.setItem(companyStorageKey, company); renderCompany(); logActivity("تحديث اسم الشركة", company || "Hesbah"); });
 function renderUsers() {
   userList.replaceChildren();
-  users.forEach(user => { const row = document.createElement("tr"); row.innerHTML = `<td></td><td></td><td dir="ltr"></td><td></td><td><button class="link danger" type="button">حذف</button></td>`; row.children[0].textContent = user.name; row.children[1].textContent = user.plan; row.children[2].textContent = user.pppoe; row.children[3].textContent = user.router; row.querySelector("button").onclick = () => { if (confirm(`حذف المشترك «${user.name}»؟`)) { users = users.filter(item => item.id !== user.id); persistUsers(); logActivity("حذف مشترك", user.name); renderUsers(); } }; userList.append(row); });
+  const statusLabels = { online: "متصل", offline: "غير متصل", unknown: "غير معروف" };
+  users.forEach(user => { const row = document.createElement("tr"); row.innerHTML = `<td></td><td></td><td></td><td dir="ltr"></td><td></td><td><button class="link danger" type="button">حذف</button></td>`; row.children[0].textContent = user.name; row.children[1].textContent = user.plan; const status = user.status || "unknown"; const badge = document.createElement("span"); badge.className = `status ${status}`; badge.textContent = statusLabels[status]; row.children[2].append(badge); row.children[3].textContent = user.pppoe; row.children[4].textContent = user.router; row.querySelector("button").onclick = () => { if (confirm(`حذف المشترك «${user.name}»؟`)) { users = users.filter(item => item.id !== user.id); persistUsers(); logActivity("حذف مشترك", user.name); renderUsers(); } }; userList.append(row); });
   userCount.textContent = users.length ? `${users.length} مشتركين` : "لا يوجد مشتركون بعد";
   usersTable.classList.toggle("hidden", users.length === 0); usersEmpty.classList.toggle("hidden", users.length !== 0);
 }
@@ -90,7 +92,7 @@ function renderActivity() {
   activity.forEach(item => { const row = document.createElement("tr"); [item.at, item.action, item.details].forEach(value => { const cell = document.createElement("td"); cell.textContent = value; row.append(cell); }); activityList.append(row); });
   activityTable.classList.toggle("hidden", activity.length === 0); activityEmpty.classList.toggle("hidden", activity.length !== 0);
 }
-userForm.addEventListener("submit", event => { event.preventDefault(); const user = { id: crypto.randomUUID(), name: userName.value.trim(), plan: subscriberPlan.value.trim(), pppoe: pppoeName.value.trim(), router: routerType.value.trim() }; users.unshift(user); persistUsers(); userForm.reset(); logActivity("إضافة مشترك", `${user.name} — ${user.plan}`); renderUsers(); });
+userForm.addEventListener("submit", event => { event.preventDefault(); const user = { id: crypto.randomUUID(), name: userName.value.trim(), plan: subscriberPlan.value.trim(), pppoe: pppoeName.value.trim(), router: routerType.value.trim(), status: subscriberStatus.value }; users.unshift(user); persistUsers(); userForm.reset(); logActivity("إضافة مشترك", `${user.name} — ${user.plan}`); renderUsers(); });
 clearActivity.onclick = () => { if (confirm("مسح كل سجل العمليات المحلي؟")) { activity = []; persistActivity(); renderActivity(); } };
 navItems.forEach(item => item.addEventListener("click", () => { navItems.forEach(button => button.classList.toggle("active", button === item)); views.forEach(view => view.classList.toggle("active", view.id === `${item.dataset.view}-view`)); window.scrollTo({ top: 0, behavior: "smooth" }); }));
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
