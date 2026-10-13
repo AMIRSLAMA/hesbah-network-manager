@@ -1,4 +1,5 @@
 const storageKey = "hesbah-devices-v1";
+const companyStorageKey = "hesbah-company-v1";
 const form = document.querySelector("#device-form");
 const idField = document.querySelector("#device-id");
 const nameField = document.querySelector("#device-name");
@@ -12,9 +13,14 @@ const count = document.querySelector("#device-count");
 const cancel = document.querySelector("#cancel-edit");
 const title = document.querySelector("#form-title");
 const search = document.querySelector("#search");
+const companyForm = document.querySelector("#company-form");
+const companyName = document.querySelector("#company-name");
+const brandName = document.querySelector(".brand strong");
 
 let devices = JSON.parse(localStorage.getItem(storageKey) || "[]");
+let company = localStorage.getItem(companyStorageKey) || "";
 const persist = () => localStorage.setItem(storageKey, JSON.stringify(devices));
+const renderCompany = () => { companyName.value = company; brandName.textContent = company || "Hesbah"; };
 const resetForm = () => { form.reset(); idField.value = ""; title.textContent = "إضافة جهاز"; cancel.classList.add("hidden"); };
 
 function render() {
@@ -48,5 +54,7 @@ form.addEventListener("submit", event => {
 });
 cancel.onclick = resetForm;
 search.addEventListener("input", render);
+companyForm.addEventListener("submit", event => { event.preventDefault(); company = companyName.value.trim(); localStorage.setItem(companyStorageKey, company); renderCompany(); });
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+renderCompany();
 render();
