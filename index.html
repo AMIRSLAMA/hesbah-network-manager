@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#075985" />
+    <meta name="description" content="Hesbah Network Manager — سجل أجهزة الشبكة" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Hesbah Network Manager</title>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">H</span>
+        <div><strong>Hesbah</strong><span>Network Manager</span></div>
+      </div>
+      <span class="stage">النسخة الأولية · سجل يدوي</span>
+    </header>
+
+    <main>
+      <section class="hero">
+        <p class="eyebrow">إدارة منظمة وآمنة</p>
+        <h1>سجل أجهزة الشبكة</h1>
+        <p>أضف الأجهزة بنفسك. هذه النسخة لا تفحص الشبكة ولا ترسل أوامر إلى أي جهاز.</p>
+      </section>
+
+      <section class="layout" aria-label="إدارة الأجهزة">
+        <article class="card form-card">
+          <h2 id="form-title">إضافة جهاز</h2>
+          <form id="device-form">
+            <input id="device-id" type="hidden" />
+            <label for="device-name">اسم الجهاز</label>
+            <input id="device-name" required maxlength="80" placeholder="مثال: راوتر السنترال" />
+
+            <label for="device-type">نوع الجهاز</label>
+            <input id="device-type" required list="device-types" maxlength="60" placeholder="اختر أو اكتب النوع" />
+            <datalist id="device-types">
+              <option value="راوتر"></option>
+              <option value="سويتش"></option>
+              <option value="نقطة وصول"></option>
+              <option value="خادم"></option>
+              <option value="جهاز لاسلكي"></option>
+              <option value="كاميرا"></option>
+            </datalist>
+
+            <label for="device-ip">عنوان IP</label>
+            <input id="device-ip" required inputmode="decimal" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)$" placeholder="192.168.1.1" title="أدخل عنوان IPv4 صحيحًا" />
+
+            <div class="form-actions">
+              <button class="primary" type="submit">حفظ الجهاز</button>
+              <button class="secondary hidden" id="cancel-edit" type="button">إلغاء</button>
+            </div>
+          </form>
+        </article>
+
+        <article class="card inventory">
+          <div class="section-heading">
+            <div><h2>الأجهزة المسجلة</h2><p id="device-count">لا توجد أجهزة بعد</p></div>
+            <input id="search" type="search" placeholder="بحث بالاسم أو IP" aria-label="بحث" />
+          </div>
+          <div id="empty-state" class="empty-state">أضف أول جهاز ليظهر هنا.</div>
+          <div class="table-wrap">
+            <table id="device-table" class="hidden">
+              <thead><tr><th>الاسم</th><th>النوع</th><th>IP</th><th>الإجراء</th></tr></thead>
+              <tbody id="device-list"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </main>
+    <footer>Powered by Hesbah</footer>
+    <template id="device-row-template">
+      <tr><td class="name"></td><td class="type"></td><td class="ip" dir="ltr"></td><td class="actions"><button class="link edit" type="button">تعديل</button><button class="link danger delete" type="button">حذف</button></td></tr>
+    </template>
+    <script src="app.js"></script>
+  </body>
+</html>
