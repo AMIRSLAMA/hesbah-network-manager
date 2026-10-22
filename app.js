@@ -199,7 +199,6 @@ function renderTickets(){
  const shown=maintenanceTickets.filter(x=>[x.number,x.title,x.customer,x.device,x.notes,ticketLabels[x.priority],ticketStatusLabels[x.status]].some(v=>String(v||"").toLowerCase().includes(term)));
  shown.forEach(item=>{
   const row=buildRow([item.number,item.title,item.customer,item.priority?ticketLabels[item.priority]: "عادية",ticketStatusLabels[item.status]||item.status,item.createdAt,item.notes||"—"],()=>{
-   if(!confirm("حذف تيكت الصيانة رقم "+item.number+"؟"))return;
    maintenanceTickets=maintenanceTickets.filter(x=>x.id!==item.id);saveTickets();logActivity("حذف تيكت صيانة",item.number+" — "+item.title);renderTickets();
   },"حذف تيكت الصيانة؟");
   body.append(row);
@@ -227,7 +226,6 @@ function renderMikrotik(){
  const body=document.querySelector("#mikrotik-list"),term=document.querySelector("#mikrotik-search").value.trim().toLowerCase();body.replaceChildren();
  const shown=mikrotikDevices.filter(x=>[x.name,x.model,x.ip,x.location,x.version,mikrotikAccessLabels[x.access],mikrotikStatusLabels[x.status]].some(v=>String(v||"").toLowerCase().includes(term)));
  shown.forEach(item=>body.append(buildRow([item.name,item.model,item.ip,item.location,item.version||"—",mikrotikAccessLabels[item.access],mikrotikStatusLabels[item.status]],()=>{
-  if(!confirm("حذف جهاز MikroTik «"+item.name+"» من السجل؟"))return;
   mikrotikDevices=mikrotikDevices.filter(x=>x.id!==item.id);saveMikrotik();logActivity("حذف جهاز MikroTik",item.name);renderMikrotik();
  },"حذف جهاز MikroTik؟")));
  document.querySelector("#mikrotik-count").textContent=mikrotikDevices.length?mikrotikDevices.length+" أجهزة مسجلة":"لا توجد أجهزة بعد";
