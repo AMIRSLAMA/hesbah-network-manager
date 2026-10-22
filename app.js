@@ -36,6 +36,9 @@ const activityList = document.querySelector("#activity-list");
 const activityTable = document.querySelector("#activity-table");
 const activityEmpty = document.querySelector("#activity-empty");
 const clearActivity = document.querySelector("#clear-activity");
+const dashboardDeviceCount = document.querySelector("#dashboard-device-count");
+const dashboardUserCount = document.querySelector("#dashboard-user-count");
+const dashboardActivityCount = document.querySelector("#dashboard-activity-count");
 
 let devices = JSON.parse(localStorage.getItem(storageKey) || "[]");
 let company = localStorage.getItem(companyStorageKey) || "";
@@ -47,8 +50,10 @@ const persistActivity = () => localStorage.setItem(activityStorageKey, JSON.stri
 const renderCompany = () => { companyName.value = company; brandName.textContent = company || "Hesbah"; };
 function logActivity(action, details) { activity.unshift({ id: crypto.randomUUID(), action, details, at: new Date().toLocaleString("ar-EG") }); activity = activity.slice(0, 100); persistActivity(); renderActivity(); }
 const resetForm = () => { form.reset(); idField.value = ""; title.textContent = "إضافة جهاز"; cancel.classList.add("hidden"); };
+function updateDashboard() { dashboardDeviceCount.textContent = devices.length; dashboardUserCount.textContent = users.length; dashboardActivityCount.textContent = activity.length; }
 
 function render() {
+  updateDashboard();
   const term = search.value.trim().toLowerCase();
   const shown = devices.filter(d => [d.name, d.type, d.ip].some(v => v.toLowerCase().includes(term)));
   list.replaceChildren();
@@ -83,6 +88,7 @@ cancel.onclick = resetForm;
 search.addEventListener("input", render);
 companyForm.addEventListener("submit", event => { event.preventDefault(); company = companyName.value.trim(); localStorage.setItem(companyStorageKey, company); renderCompany(); logActivity("تحديث اسم الشركة", company || "Hesbah"); });
 function renderUsers() {
+  updateDashboard();
   userList.replaceChildren();
   const statusLabels = { online: "متصل", offline: "غير متصل", unknown: "غير معروف" };
   users.forEach(user => { const row = document.createElement("tr"); row.innerHTML = `<td></td><td dir="ltr"></td><td></td><td></td><td dir="ltr"></td><td></td><td class="row-actions"><button class="link router" type="button">إدارة Wi‑Fi</button><button class="link danger delete" type="button">حذف</button></td>`; row.children[0].textContent = user.name; row.children[1].textContent = user.primaryPhone || "—"; row.children[2].textContent = user.plan; const status = user.status || "unknown"; const badge = document.createElement("span"); badge.className = `status ${status}`; badge.textContent = statusLabels[status]; row.children[3].append(badge); row.children[4].textContent = user.pppoe; row.children[5].textContent = user.router; row.querySelector(".router").onclick = () => { logActivity("طلب إدارة Wi‑Fi", `${user.name} — بانتظار الربط الآمن`); alert("إدارة راوتر العميل غير مفعّلة بعد. عند ربط الخادم بأمان، ستتاح طلبات تغيير كلمة Wi‑Fi مع تأكيد وسجل تدقيق."); }; row.querySelector(".delete").onclick = () => { if (confirm(`حذف المشترك «${user.name}»؟`)) { users = users.filter(item => item.id !== user.id); persistUsers(); logActivity("حذف مشترك", user.name); renderUsers(); } }; userList.append(row); });
@@ -90,13 +96,15 @@ function renderUsers() {
   usersTable.classList.toggle("hidden", users.length === 0); usersEmpty.classList.toggle("hidden", users.length !== 0);
 }
 function renderActivity() {
+  updateDashboard();
   activityList.replaceChildren();
   activity.forEach(item => { const row = document.createElement("tr"); [item.at, item.action, item.details].forEach(value => { const cell = document.createElement("td"); cell.textContent = value; row.append(cell); }); activityList.append(row); });
   activityTable.classList.toggle("hidden", activity.length === 0); activityEmpty.classList.toggle("hidden", activity.length !== 0);
 }
 userForm.addEventListener("submit", event => { event.preventDefault(); const user = { id: crypto.randomUUID(), name: userName.value.trim(), primaryPhone: primaryPhone.value.trim(), secondaryPhone: secondaryPhone.value.trim(), plan: subscriberPlan.value.trim(), pppoe: pppoeName.value.trim(), router: routerType.value.trim(), status: subscriberStatus.value }; users.unshift(user); persistUsers(); userForm.reset(); logActivity("إضافة مشترك", `${user.name} — ${user.plan}`); renderUsers(); });
 clearActivity.onclick = () => { if (confirm("مسح كل سجل العمليات المحلي؟")) { activity = []; persistActivity(); renderActivity(); } };
-navItems.forEach(item => item.addEventListener("click", () => { navItems.forEach(button => button.classList.toggle("active", button === item)); views.forEach(view => view.classList.toggle("active", view.id === `${item.dataset.view}-view`)); window.scrollTo({ top: 0, behavior: "smooth" }); }));
+navItems.forEach(item => item.addEventListener("click", () => { navItems.forEach(button => button.classList.toggle("active", button === item)); views.forEach(view => view.classList.toggle("active", view.id === item.dataset.view + "-view")); window.scrollTo({ top: 0, behavior: "smooth" }); }));
+document.querySelectorAll("[data-open-view]").forEach(button => button.addEventListener("click", () => { const target = [...navItems].find(item => item.dataset.view === button.dataset.openView); if (target) target.click(); if (button.dataset.focus) document.getElementById(button.dataset.focus)?.focus(); }));
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
 renderCompany();
 render();
