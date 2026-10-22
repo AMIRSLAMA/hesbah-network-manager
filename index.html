@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#075985" />
+    <meta name="theme-color" content="#064e3b" />
     <meta name="description" content="Hesbah Network Manager — سجل أجهزة الشبكة" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="stylesheet" href="styles.css" />
@@ -19,14 +19,36 @@
     </header>
 
     <nav class="main-nav" aria-label="أقسام النظام">
-      <button class="nav-item active" type="button" data-view="devices">الأجهزة</button>
+      <button class="nav-item active" type="button" data-view="dashboard">الرئيسية</button>
+      <button class="nav-item" type="button" data-view="devices">الأجهزة</button>
       <button class="nav-item" type="button" data-view="users">المشتركون</button>
       <button class="nav-item" type="button" data-view="activity">سجل العمليات</button>
       <button class="nav-item" type="button" data-view="subscription">اشتراك الشركة</button>
     </nav>
 
     <main>
-      <section class="view active" id="devices-view">
+      <section class="view active" id="dashboard-view">
+        <section class="dashboard-welcome">
+          <div><p class="eyebrow">HESBAH NETWORK MANAGER</p><h1>إدارة شبكتك من مكان واحد</h1><p>لوحة متابعة منظمة لأجهزتك ومشتركيك وعملياتك اليومية.</p></div>
+          <div class="welcome-mark" aria-hidden="true">H</div>
+        </section>
+        <section class="dashboard-stats" aria-label="ملخص النظام">
+          <article class="stat-card"><span class="stat-icon">⌁</span><p>أجهزة الشبكة</p><strong id="dashboard-device-count">0</strong><small>أجهزة مسجلة يدويًا</small></article>
+          <article class="stat-card"><span class="stat-icon">♙</span><p>المشتركون</p><strong id="dashboard-user-count">0</strong><small>مشترك مسجل</small></article>
+          <article class="stat-card"><span class="stat-icon">▤</span><p>سجل العمليات</p><strong id="dashboard-activity-count">0</strong><small>عملية محفوظة محليًا</small></article>
+          <article class="stat-card"><span class="stat-icon">●</span><p>حالة النظام</p><strong class="system-ready">جاهز</strong><small>الوضع المحلي الآمن</small></article>
+        </section>
+        <section class="card quick-card"><div class="section-heading"><div><h2>اختصارات سريعة</h2><p>ابدأ المهمة مباشرة من هنا</p></div></div>
+          <div class="quick-actions">
+            <button class="quick-action" type="button" data-open-view="devices" data-focus="device-name"><span>＋</span><strong>إضافة جهاز شبكة</strong><small>اسم الجهاز والنوع وعنوان IP</small></button>
+            <button class="quick-action" type="button" data-open-view="users" data-focus="user-name"><span>♙</span><strong>إضافة مشترك</strong><small>بيانات العميل والباقـة</small></button>
+            <button class="quick-action" type="button" data-open-view="devices" data-focus="search"><span>⌕</span><strong>البحث عن جهاز</strong><small>الوصول إلى سجل الأجهزة</small></button>
+            <button class="quick-action" type="button" data-open-view="activity"><span>▤</span><strong>مراجعة العمليات</strong><small>متابعة آخر التغييرات</small></button>
+          </div>
+        </section>
+        <section class="card safe-note dashboard-note"><h2>مركز التحكم الآمن</h2><p>البيانات محفوظة محليًا في هذا المتصفح. الاتصال الفعلي بالراوترات وفحص الشبكة غير مفعّل بعد، ولن يتم إرسال أي أوامر للأجهزة في هذه المرحلة.</p></section>
+      </section>
+      <section class="view" id="devices-view">
       <section class="hero">
         <p class="eyebrow">إدارة منظمة وآمنة</p>
         <h1>سجل أجهزة الشبكة</h1>
