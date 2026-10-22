@@ -21,7 +21,12 @@
     <nav class="main-nav" aria-label="أقسام النظام">
       <button class="nav-item active" type="button" data-view="dashboard">الرئيسية</button>
       <button class="nav-item" type="button" data-view="devices">الأجهزة</button>
+      <button class="nav-item" type="button" data-view="routers">الراوترات</button>
       <button class="nav-item" type="button" data-view="users">المشتركون</button>
+      <button class="nav-item" type="button" data-view="plans">الباقات</button>
+      <button class="nav-item" type="button" data-view="collections">التحصيلات</button>
+      <button class="nav-item" type="button" data-view="reports">التقارير</button>
+      <button class="nav-item" type="button" data-view="network-settings">إعدادات الشبكة</button>
       <button class="nav-item" type="button" data-view="activity">سجل العمليات</button>
       <button class="nav-item" type="button" data-view="subscription">اشتراك الشركة</button>
     </nav>
@@ -125,6 +130,36 @@
         <article class="card inventory"><div class="section-heading"><div><h2>آخر العمليات</h2><p>لا تُسجل أي اتصالات شبكية في هذه المرحلة.</p></div><button class="secondary" id="clear-activity" type="button">مسح السجل المحلي</button></div><div id="activity-empty" class="empty-state">لا توجد عمليات مسجلة بعد.</div><div class="table-wrap"><table id="activity-table" class="hidden"><thead><tr><th>الوقت</th><th>العملية</th><th>التفاصيل</th></tr></thead><tbody id="activity-list"></tbody></table></div></article>
       </section>
 
+      <section class="view" id="routers-view">
+        <section class="hero compact"><p class="eyebrow">البنية التحتية</p><h1>إدارة الراوترات</h1><p>سجل يدوي للراوترات ونقاط التحكم. لن يتم الاتصال بأي جهاز حتى تجهيز الربط الآمن.</p></section>
+        <section class="layout">
+          <article class="card form-card"><h2>إضافة راوتر</h2><form id="router-form"><label for="router-name">اسم الراوتر</label><input id="router-name" required maxlength="80" placeholder="مثال: راوتر السنترال" /><label for="router-model">الشركة / الموديل</label><input id="router-model" required maxlength="80" placeholder="MikroTik RB750GL" /><label for="router-ip">عنوان IP</label><input id="router-ip" required inputmode="decimal" placeholder="192.168.1.1" /><label for="router-location">الموقع</label><input id="router-location" maxlength="100" placeholder="السنترال / العمارة" /><button class="primary full" type="submit">حفظ الراوتر</button></form></article>
+          <article class="card inventory"><div class="section-heading"><div><h2>الراوترات المسجلة</h2><p id="router-count">لا توجد راوترات بعد</p></div></div><div id="router-empty" class="empty-state">أضف أول راوتر ليظهر هنا.</div><div class="table-wrap"><table id="router-table" class="hidden"><thead><tr><th>الاسم</th><th>الموديل</th><th>IP</th><th>الموقع</th><th>إجراء</th></tr></thead><tbody id="router-list"></tbody></table></div></article>
+        </section>
+      </section>
+      <section class="view" id="plans-view">
+        <section class="hero compact"><p class="eyebrow">الخدمات والأسعار</p><h1>الباقات</h1><p>تعريف الباقات والأسعار داخل السجل المحلي. لن تُطبّق على PPPoE تلقائيًا في هذه المرحلة.</p></section>
+        <section class="layout">
+          <article class="card form-card"><h2>إضافة باقة</h2><form id="plan-form"><label for="plan-name">اسم الباقة</label><input id="plan-name" required maxlength="60" placeholder="باقة 10 ميجا" /><label for="plan-speed">السرعة (Mbps)</label><input id="plan-speed" required type="number" min="1" max="10000" /><label for="plan-price">السعر الشهري (جنيه)</label><input id="plan-price" required type="number" min="0" step="0.01" /><button class="primary full" type="submit">حفظ الباقة</button></form></article>
+          <article class="card inventory"><div class="section-heading"><div><h2>الباقات المسجلة</h2><p id="plan-count">لا توجد باقات بعد</p></div></div><div id="plan-empty" class="empty-state">أضف أول باقة ليظهر هنا.</div><div class="table-wrap"><table id="plan-table" class="hidden"><thead><tr><th>الباقة</th><th>السرعة</th><th>السعر الشهري</th><th>إجراء</th></tr></thead><tbody id="plan-list"></tbody></table></div></article>
+        </section>
+      </section>
+      <section class="view" id="collections-view">
+        <section class="hero compact"><p class="eyebrow">الحسابات اليومية</p><h1>التحصيلات</h1><p>سجل يدوي للمدفوعات فقط؛ لا توجد بوابة دفع أو خصم آلي من المشتركين حتى الآن.</p></section>
+        <section class="layout">
+          <article class="card form-card"><h2>تسجيل تحصيل</h2><form id="payment-form"><label for="payment-subscriber">اسم المشترك</label><input id="payment-subscriber" required maxlength="80" placeholder="اسم المشترك" /><label for="payment-amount">المبلغ (جنيه)</label><input id="payment-amount" required type="number" min="0.01" step="0.01" /><label for="payment-date">تاريخ التحصيل</label><input id="payment-date" required type="date" /><label for="payment-method">طريقة الدفع</label><select id="payment-method"><option>نقدي</option><option>تحويل بنكي</option><option>محفظة إلكترونية</option><option>أخرى</option></select><button class="primary full" type="submit">حفظ التحصيل</button></form></article>
+          <article class="card inventory"><div class="section-heading"><div><h2>سجل التحصيلات</h2><p id="payment-total">إجمالي المحصل: 0 جنيه</p></div></div><div id="payment-empty" class="empty-state">لا توجد تحصيلات مسجلة بعد.</div><div class="table-wrap"><table id="payment-table" class="hidden"><thead><tr><th>التاريخ</th><th>المشترك</th><th>المبلغ</th><th>الطريقة</th></tr></thead><tbody id="payment-list"></tbody></table></div></article>
+        </section>
+      </section>
+      <section class="view" id="reports-view">
+        <section class="hero compact"><p class="eyebrow">متابعة الأداء</p><h1>التقارير</h1><p>ملخص لحظي من السجلات المحلية في هذا المتصفح.</p></section>
+        <section class="subscription-grid"><article class="card"><p class="stat-label">الأجهزة المسجلة</p><strong class="stat-value" id="report-devices">0</strong><p>عدد سجلات الأجهزة.</p></article><article class="card"><p class="stat-label">المشتركون</p><strong class="stat-value" id="report-users">0</strong><p>عدد سجلات المشتركين.</p></article><article class="card"><p class="stat-label">إجمالي التحصيلات</p><strong class="stat-value" id="report-payments">0 جنيه</strong><p>مجموع المدفوعات المسجلة يدويًا.</p></article></section>
+        <article class="card safe-note"><h2>ملاحظة التقرير</h2><p>حالة الاتصال الفعلية، استهلاك البيانات، وانقطاع الخدمة غير متاحة قبل الربط الآمن بالراوترات والخادم.</p></article>
+      </section>
+      <section class="view" id="network-settings-view">
+        <section class="hero compact"><p class="eyebrow">التحكم والاتصال</p><h1>إعدادات الشبكة</h1><p>احفظ ملاحظات الإعدادات محليًا لتجهيز الربط المستقبلي؛ هذه البيانات لا تغيّر إعدادات الراوتر فعليًا.</p></section>
+        <article class="card"><form id="network-settings-form"><label for="management-channel">طريقة الوصول المخطط لها</label><select id="management-channel"><option value="tailscale">Tailscale / VPN</option><option value="lan">الشبكة المحلية فقط</option><option value="vpn">VPN آخر</option></select><label for="gateway-ip">عنوان البوابة (Gateway)</label><input id="gateway-ip" placeholder="192.168.1.1" inputmode="decimal" /><label for="lan-subnet">نطاق الشبكة المحلية</label><input id="lan-subnet" placeholder="مثال: 10.50.60.0/24" /><label for="network-notes">ملاحظات</label><textarea id="network-notes" rows="4" placeholder="ملاحظات عن مواقع الأجهزة أو تقسيم الشبكة"></textarea><button class="primary" type="submit">حفظ الإعدادات المحلية</button></form><p class="security-hint">لن يتم حفظ كلمات مرور الراوتر أو مفاتيح VPN هنا. لا يوجد اتصال فعلي بالشبكة من هذه الصفحة.</p></article>
+      </section>
       <section class="view" id="subscription-view">
         <section class="hero compact"><p class="eyebrow">بوابة المالك</p><h1>اشتراك الشركة</h1><p>واجهة الاشتراك جاهزة؛ الدفع الإلكتروني وتفعيل الخطة سيُربطان لاحقًا بخدمة المالك.</p></section>
         <section class="subscription-grid"><article class="card"><p class="stat-label">الخطة الحالية</p><strong class="stat-value">تجريبية</strong><p>لا توجد مدفوعات أو فواتير في النسخة المحلية.</p></article><article class="card"><p class="stat-label">حالة الحساب</p><strong class="stat-value success">نشط محليًا</strong><p>الحالة ستُدار من لوحة مالك Hesbah بعد الربط.</p></article><article class="card"><p class="stat-label">حماية الشبكة</p><strong class="stat-value">غير مرتبط</strong><p>تم تأجيل الوصول للخادم والأجهزة عمدًا.</p></article></section>
