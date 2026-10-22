@@ -14,20 +14,31 @@ main{max-width:none!important;margin:0 260px 0 0!important;padding:36px clamp(18
 /* WhatsApp compact reusable popup action */
 .whatsapp-open{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;border:1px solid #10b981;border-radius:8px;padding:8px 10px;background:#ecfdf5;color:#065f46;font:inherit;font-size:13px;cursor:pointer}.whatsapp-open:hover{background:#d1fae5}
 
-/* Internal browser trial */
+
+/* Internal browser multiple tabs */
 .internal-browser-card{padding:18px}
-.internal-browser-shortcuts,.internal-browser-controls,.internal-browser-address-row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.internal-browser-shortcuts,.internal-browser-controls,.internal-browser-address-row,.internal-browser-tabs-bar{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
 .internal-browser-shortcuts{margin-bottom:18px}
 .internal-browser-form{margin-bottom:14px}
 .internal-browser-form label{margin-top:0}
 .internal-browser-address-row input{flex:1;min-width:200px}
+.internal-browser-tabs-bar{justify-content:space-between;align-items:stretch;margin:10px 0 0;border-bottom:1px solid var(--line);gap:12px}
+.internal-browser-tabs{display:flex;gap:6px;align-items:end;flex:1;min-width:0;overflow-x:auto;padding-top:4px}
+.internal-browser-tab{display:flex;align-items:center;min-width:0;max-width:220px;border:1px solid var(--line);border-bottom:0;border-radius:9px 9px 0 0;background:var(--surface);overflow:hidden}
+.internal-browser-tab.active{background:#123d2c;border-color:#123d2c;color:#fff}
+.internal-browser-tab-select{border:0;background:transparent;color:inherit;padding:10px 8px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;flex:1}
+.internal-browser-tab-close{border:0;background:transparent;color:inherit;font-size:20px;padding:4px 9px;cursor:pointer;line-height:1}
+.internal-browser-tab-close:hover{background:#ffffff22}
 .internal-browser-controls{padding:12px 0;justify-content:flex-start}
 .internal-browser-controls span{color:var(--muted);font-size:13px;line-height:1.6}
 .internal-browser-controls button:disabled{opacity:.45;cursor:not-allowed}
 .internal-browser-frame-wrap{position:relative;min-height:520px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
-#internal-browser-frame{display:block;width:100%;height:520px;border:0;background:#fff}
-.internal-browser-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;background:#f8fafc;color:var(--muted)}
+.internal-browser-panes{position:relative;width:100%;height:520px;background:#fff}
+.internal-browser-pane{display:none;position:absolute;inset:0}
+.internal-browser-pane.active{display:block}
+.internal-browser-pane iframe{display:block;width:100%;height:100%;border:0;background:#fff}
+.internal-browser-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;background:#f8fafc;color:var(--muted);pointer-events:none}
 .internal-browser-empty span{font-size:44px}
 .internal-browser-empty strong{font-size:18px;color:var(--ink)}
 .internal-browser-empty p{margin:0;line-height:1.7}
-@media(max-width:600px){.internal-browser-frame-wrap,#internal-browser-frame{min-height:420px;height:420px}.internal-browser-address-row{align-items:stretch;flex-direction:column}.internal-browser-address-row button{width:100%}}
+@media(max-width:600px){.internal-browser-frame-wrap,.internal-browser-panes{min-height:420px;height:420px}.internal-browser-address-row{align-items:stretch;flex-direction:column}.internal-browser-address-row button{width:100%}.internal-browser-tabs-bar{align-items:stretch;flex-direction:column}.internal-browser-tab{max-width:180px}}
