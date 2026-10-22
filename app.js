@@ -88,7 +88,7 @@
   if(button.dataset.browserUrl.includes("web.whatsapp.com"))openWhatsApp();
   else navigate(button.dataset.browserUrl);
  }));
- newTabButton.addEventListener("click",()=>createTab());
+ newTabButton.addEventListener("click",event=>{event.preventDefault();try{const before=tabs.length;const tab=createTab();status.textContent="تم فتح "+tab.title+" بنجاح. إجمالي التبويبات: "+tabs.length+".";if(tabs.length<=before)throw new Error("لم تتم إضافة التبويب");}catch(error){status.textContent="تعذر فتح تبويب جديد: "+(error&&error.message?error.message:"خطأ غير معروف");console.error("Hesbah browser new-tab error",error);}});
  back.addEventListener("click",()=>{const tab=active();if(tab&&tab.position>0){tab.position--;tab.url=tab.history[tab.position];tab.frame.src=tab.url;address.value=tab.url;status.textContent="جارٍ الرجوع…";updateControls();}});
  forward.addEventListener("click",()=>{const tab=active();if(tab&&tab.position<tab.history.length-1){tab.position++;tab.url=tab.history[tab.position];tab.frame.src=tab.url;address.value=tab.url;status.textContent="جارٍ التقدم…";updateControls();}});
  reload.addEventListener("click",()=>{const tab=active();if(tab&&tab.url){status.textContent="جارٍ إعادة التحميل…";tab.frame.src=tab.url;}});
