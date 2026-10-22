@@ -33,6 +33,7 @@
       <button class="nav-item" type="button" data-view="subscription">اشتراك الشركة</button>
       <button class="nav-item" type="button" data-view="maintenance">تيكتات الصيانة</button>
       <button class="nav-item" type="button" data-view="mikrotik">الميكروتيك</button>
+      <button class="nav-item" type="button" data-view="whatsapp">واتس آب</button>
     </nav>
 
     <main>
@@ -232,6 +233,25 @@
           <article class="card inventory"><div class="section-heading"><div><h2>أجهزة MikroTik المسجلة</h2><p id="mikrotik-count">لا توجد أجهزة بعد</p></div><input id="mikrotik-search" type="search" placeholder="بحث بالاسم أو IP أو الموديل" aria-label="بحث في أجهزة MikroTik" /></div>
             <div id="mikrotik-empty" class="empty-state">أضف أول جهاز MikroTik ليظهر هنا.</div>
             <div class="table-wrap"><table id="mikrotik-table" class="hidden"><thead><tr><th>الاسم</th><th>الموديل</th><th>IP</th><th>الموقع</th><th>إصدار RouterOS</th><th>الوصول</th><th>الحالة المسجلة</th><th>إجراء</th></tr></thead><tbody id="mikrotik-list"></tbody></table></div>
+          </article>
+        </section>
+      </section>
+
+
+      <section class="view" id="whatsapp-view">
+        <section class="hero compact"><p class="eyebrow">التواصل والتنظيم</p><h1>واتس آب</h1><p>اجمع روابط جروبات الشبكة في مكان واحد، مع تصنيفها والبحث فيها. حفظ السجل محلي في هذا المتصفح ولا يتم إنشاء جروبات أو إرسال رسائل تلقائيًا.</p></section>
+        <section class="layout">
+          <article class="card form-card"><h2 id="whatsapp-form-heading">إضافة جروب واتساب</h2><form id="whatsapp-form">
+            <input id="whatsapp-id" type="hidden" />
+            <label for="whatsapp-name">اسم الجروب</label><input id="whatsapp-name" required maxlength="100" placeholder="مثال: فنيين الشبكة" />
+            <label for="whatsapp-link">رابط دعوة الجروب</label><input id="whatsapp-link" type="url" required maxlength="500" placeholder="https://chat.whatsapp.com/..." />
+            <label for="whatsapp-category">التصنيف</label><select id="whatsapp-category"><option value="maintenance">الصيانة</option><option value="subscribers">المشتركين</option><option value="technicians">الفنيين</option><option value="management">إدارة الشبكة</option><option value="other">أخرى</option></select>
+            <label for="whatsapp-description">الغرض / ملاحظات</label><textarea id="whatsapp-description" rows="3" maxlength="500" placeholder="اكتب وصفًا مختصرًا للجروب"></textarea>
+            <div class="row-actions"><button class="primary" id="whatsapp-save" type="submit">حفظ الجروب</button><button class="secondary hidden" id="whatsapp-cancel" type="button">إلغاء التعديل</button></div>
+          </form><p class="security-hint">أضف رابط دعوة موثوقًا فقط. لا تدخل أكواد التحقق أو بيانات حساب واتساب.</p></article>
+          <article class="card inventory"><div class="section-heading"><div><h2>جروبات واتساب المسجلة</h2><p id="whatsapp-count">لا توجد جروبات بعد</p></div><input id="whatsapp-search" type="search" placeholder="بحث باسم الجروب أو وصفه" aria-label="بحث في جروبات واتساب" /></div>
+            <div id="whatsapp-empty" class="empty-state">أضف أول جروب واتساب ليظهر هنا.</div>
+            <div class="table-wrap"><table id="whatsapp-table" class="hidden"><thead><tr><th>اسم الجروب</th><th>التصنيف</th><th>الوصف</th><th>الرابط</th><th>الإضافة</th><th>إجراء</th></tr></thead><tbody id="whatsapp-list"></tbody></table></div>
           </article>
         </section>
       </section>
