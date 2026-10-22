@@ -242,3 +242,49 @@ document.querySelector("#mikrotik-form").addEventListener("submit",e=>{
 });
 document.querySelector("#mikrotik-search").addEventListener("input",renderMikrotik);
 renderMikrotik();
+
+
+/* WhatsApp groups directory: stores invite links locally, never accesses WhatsApp accounts. */
+const whatsappKey="hesbah-whatsapp-groups-v1";
+let whatsappGroups=JSON.parse(localStorage.getItem(whatsappKey)||"[]");
+const whatsappCategories={maintenance:"الصيانة",subscribers:"المشتركين",technicians:"الفنيين",management:"إدارة الشبكة",other:"أخرى"};
+const saveWhatsappGroups=()=>localStorage.setItem(whatsappKey,JSON.stringify(whatsappGroups));
+function renderWhatsappGroups(){
+ const body=document.querySelector("#whatsapp-list"),term=document.querySelector("#whatsapp-search").value.trim().toLowerCase();
+ body.replaceChildren();
+ const shown=whatsappGroups.filter(x=>[x.name,x.description,whatsappCategories[x.category]].some(v=>String(v||"").toLowerCase().includes(term)));
+ shown.forEach(item=>{
+  const row=document.createElement("tr");
+  [item.name,whatsappCategories[item.category]||"أخرى",item.description||"—"].forEach(value=>{const cell=document.createElement("td");cell.textContent=value;row.append(cell);});
+  const linkCell=document.createElement("td"),link=document.createElement("a");
+  link.href=item.link;link.target="_blank";link.rel="noopener noreferrer";link.textContent="فتح واتساب";linkCell.append(link);row.append(linkCell);
+  const dateCell=document.createElement("td");dateCell.textContent=item.createdAt||"—";row.append(dateCell);
+  const actions=document.createElement("td");actions.className="row-actions";
+  const edit=document.createElement("button");edit.type="button";edit.className="link";edit.textContent="تعديل";
+  edit.addEventListener("click",()=>{document.querySelector("#whatsapp-id").value=item.id;document.querySelector("#whatsapp-name").value=item.name;document.querySelector("#whatsapp-link").value=item.link;document.querySelector("#whatsapp-category").value=item.category;document.querySelector("#whatsapp-description").value=item.description||"";document.querySelector("#whatsapp-form-heading").textContent="تعديل جروب واتساب";document.querySelector("#whatsapp-save").textContent="حفظ التعديلات";document.querySelector("#whatsapp-cancel").classList.remove("hidden");document.querySelector("#whatsapp-name").focus();});
+  const del=document.createElement("button");del.type="button";del.className="link danger";del.textContent="حذف";
+  del.addEventListener("click",()=>{if(!confirm("حذف جروب واتساب «"+item.name+"» من السجل؟"))return;whatsappGroups=whatsappGroups.filter(x=>x.id!==item.id);saveWhatsappGroups();logActivity("حذف جروب واتساب",item.name);renderWhatsappGroups();});
+  actions.append(edit,del);row.append(actions);body.append(row);
+ });
+ document.querySelector("#whatsapp-count").textContent=whatsappGroups.length?whatsappGroups.length+" جروبات مسجلة":"لا توجد جروبات بعد";
+ document.querySelector("#whatsapp-table").classList.toggle("hidden",shown.length===0);
+ document.querySelector("#whatsapp-empty").classList.toggle("hidden",shown.length!==0);
+ document.querySelector("#whatsapp-empty").textContent=whatsappGroups.length&&!shown.length?"لا توجد نتائج مطابقة للبحث.":"أضف أول جروب واتساب ليظهر هنا.";
+}
+function resetWhatsappForm(){const form=document.querySelector("#whatsapp-form");form.reset();document.querySelector("#whatsapp-id").value="";document.querySelector("#whatsapp-form-heading").textContent="إضافة جروب واتساب";document.querySelector("#whatsapp-save").textContent="حفظ الجروب";document.querySelector("#whatsapp-cancel").classList.add("hidden");}
+document.querySelector("#whatsapp-form").addEventListener("submit",e=>{
+ e.preventDefault();
+ const name=document.querySelector("#whatsapp-name").value.trim(),link=document.querySelector("#whatsapp-link").value.trim();
+ let parsed;try{parsed=new URL(link);}catch{return alert("من فضلك أدخل رابطًا صحيحًا للجروب.");}
+ if(parsed.protocol!=="https:"||!(parsed.hostname==="chat.whatsapp.com"||parsed.hostname==="wa.me"||parsed.hostname==="www.whatsapp.com"))return alert("استخدم رابط واتساب رسميًا يبدأ بـ https://.");
+ const id=document.querySelector("#whatsapp-id").value;
+ const duplicate=whatsappGroups.some(x=>x.id!==id&&x.link===link);
+ if(duplicate&&!confirm("رابط الجروب مسجل بالفعل. هل تريد حفظه مرة أخرى؟"))return;
+ const previous=whatsappGroups.find(x=>x.id===id);
+ const item={id:id||crypto.randomUUID(),name,link,category:document.querySelector("#whatsapp-category").value,description:document.querySelector("#whatsapp-description").value.trim(),createdAt:previous?.createdAt||new Date().toLocaleDateString("ar-EG")};
+ if(id){whatsappGroups=whatsappGroups.map(x=>x.id===id?item:x);logActivity("تعديل جروب واتساب",name);}else{whatsappGroups.unshift(item);logActivity("إضافة جروب واتساب",name);}
+ saveWhatsappGroups();resetWhatsappForm();renderWhatsappGroups();
+});
+document.querySelector("#whatsapp-cancel").addEventListener("click",resetWhatsappForm);
+document.querySelector("#whatsapp-search").addEventListener("input",renderWhatsappGroups);
+renderWhatsappGroups();
