@@ -34,6 +34,7 @@
       <button class="nav-item" type="button" data-view="maintenance">تيكتات الصيانة</button>
       <button class="nav-item" type="button" data-view="mikrotik">الميكروتيك</button>
       <button class="nav-item" type="button" data-view="whatsapp">واتس آب</button>
+      <button class="nav-item" type="button" data-view="internal-browser">المتصفح الداخلي</button>
     </nav>
 
     <main>
@@ -253,6 +254,36 @@
             <div id="whatsapp-empty" class="empty-state">أضف أول جروب واتساب ليظهر هنا.</div>
             <div class="table-wrap"><table id="whatsapp-table" class="hidden"><thead><tr><th>اسم الجروب</th><th>التصنيف</th><th>الوصف</th><th>الرابط</th><th>الإضافة</th><th>إجراء</th></tr></thead><tbody id="whatsapp-list"></tbody></table></div>
           </article>
+        </section>
+      </section>
+
+
+      <section class="view" id="internal-browser-view">
+        <section class="hero compact"><p class="eyebrow">تجربة أولية</p><h1>المتصفح الداخلي</h1><p>جرّب فتح موقع أو واجهة جهاز من داخل Hesbah Network Manager. بعض المواقع تمنع العرض داخل إطار مدمج، وقد تمنع المتصفحات الآمنة الوصول إلى عناوين HTTP المحلية من صفحة HTTPS.</p></section>
+        <section class="card internal-browser-card">
+          <div class="internal-browser-shortcuts" aria-label="اختصارات">
+            <button class="secondary" type="button" data-browser-url="https://web.whatsapp.com/">WhatsApp Web</button>
+            <button class="secondary" type="button" data-browser-url="https://www.google.com/">Google</button>
+            <button class="secondary" type="button" data-browser-url="https://example.com/">Example</button>
+          </div>
+          <form id="internal-browser-form" class="internal-browser-form">
+            <label for="internal-browser-address">عنوان الموقع أو IP الجهاز</label>
+            <div class="internal-browser-address-row">
+              <input id="internal-browser-address" type="text" inputmode="url" autocomplete="url" placeholder="https://web.whatsapp.com أو 192.168.1.1" required />
+              <button class="primary" type="submit">فتح داخل البرنامج</button>
+            </div>
+          </form>
+          <div class="internal-browser-controls">
+            <button class="secondary" id="internal-browser-back" type="button" disabled>رجوع</button>
+            <button class="secondary" id="internal-browser-forward" type="button" disabled>تقدم</button>
+            <button class="secondary" id="internal-browser-reload" type="button" disabled>إعادة تحميل</button>
+            <span id="internal-browser-status" role="status" aria-live="polite">اختر موقعًا للبدء.</span>
+          </div>
+          <div class="internal-browser-frame-wrap">
+            <iframe id="internal-browser-frame" title="المتصفح الداخلي لتجربة المواقع" referrerpolicy="strict-origin-when-cross-origin" allow="clipboard-read; clipboard-write"></iframe>
+            <div id="internal-browser-empty" class="internal-browser-empty"><span aria-hidden="true">🌐</span><strong>المتصفح الداخلي جاهز للتجربة</strong><p>اكتب عنوان موقع أو اختر أحد الاختصارات بالأعلى.</p></div>
+          </div>
+          <p class="security-hint">هذه تجربة عرض داخل الصفحة وليست متصفحًا كاملًا. إذا ظهر إطار فارغ أو رسالة رفض، فغالبًا الموقع يمنع التضمين أو أن المتصفح حظر اتصالًا غير آمن. لن نفتح نافذة خارجية تلقائيًا.</p>
         </section>
       </section>
 

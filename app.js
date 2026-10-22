@@ -295,3 +295,41 @@ document.querySelector("#whatsapp-form").addEventListener("submit",e=>{
 document.querySelector("#whatsapp-cancel").addEventListener("click",resetWhatsappForm);
 document.querySelector("#whatsapp-search").addEventListener("input",renderWhatsappGroups);
 renderWhatsappGroups();
+
+/* Internal browser trial: embedded browsing only; sites may refuse framing. */
+(() => {
+ const form=document.querySelector("#internal-browser-form");
+ const address=document.querySelector("#internal-browser-address");
+ const frame=document.querySelector("#internal-browser-frame");
+ const empty=document.querySelector("#internal-browser-empty");
+ const status=document.querySelector("#internal-browser-status");
+ const back=document.querySelector("#internal-browser-back");
+ const forward=document.querySelector("#internal-browser-forward");
+ const reload=document.querySelector("#internal-browser-reload");
+ let history=[],position=-1;
+ function updateControls(){back.disabled=position<=0;forward.disabled=position<0||position>=history.length-1;reload.disabled=position<0;}
+ function normalizeAddress(value){
+  let raw=value.trim();
+  if(!raw)return null;
+  if(!/^[a-zA-Z][a-zA-Z\\d+.-]*:/.test(raw)){
+   const host=raw.split(/[/?#]/)[0];
+   raw=/^(?:\\d{1,3}\\.){3}\\d{1,3}(?::\\d+)?$/.test(host)||/^(?:localhost|\\[[0-9a-f:]+\\])(?::\\d+)?$/i.test(host)?"http://"+raw:"https://"+raw;
+  }
+  let url;try{url=new URL(raw);}catch{return null;}
+  if(!["http:","https:"].includes(url.protocol))return null;
+  return url.href;
+ }
+ function navigate(value,add=true){
+  const url=normalizeAddress(value);
+  if(!url){status.textContent="العنوان غير صحيح. استخدم عنوان HTTP أو HTTPS.";return;}
+  if(add){history=history.slice(0,position+1);history.push(url);position=history.length-1;}
+  address.value=url;empty.classList.add("hidden");status.textContent="جارٍ محاولة عرض الموقع داخل الصفحة…";
+  frame.src=url;updateControls();
+ }
+ form.addEventListener("submit",event=>{event.preventDefault();navigate(address.value);});
+ document.querySelectorAll("[data-browser-url]").forEach(button=>button.addEventListener("click",()=>navigate(button.dataset.browserUrl)));
+ back.addEventListener("click",()=>{if(position>0){position--;navigate(history[position],false);}});
+ forward.addEventListener("click",()=>{if(position<history.length-1){position++;navigate(history[position],false);}});
+ reload.addEventListener("click",()=>{if(position>=0){status.textContent="جارٍ إعادة التحميل…";frame.src=history[position];}});
+ frame.addEventListener("load",()=>{if(position>=0)status.textContent="تم تحميل إطار العرض؛ إذا كان المحتوى فارغًا فقد يكون الموقع منع التضمين.";});
+})();
