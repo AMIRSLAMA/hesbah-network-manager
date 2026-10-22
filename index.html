@@ -31,6 +31,8 @@
       <button class="nav-item" type="button" data-view="network-settings">إعدادات الشبكة</button>
       <button class="nav-item" type="button" data-view="activity">سجل العمليات</button>
       <button class="nav-item" type="button" data-view="subscription">اشتراك الشركة</button>
+      <button class="nav-item" type="button" data-view="maintenance">تيكتات الصيانة</button>
+      <button class="nav-item" type="button" data-view="mikrotik">الميكروتيك</button>
     </nav>
 
     <main>
@@ -195,6 +197,45 @@
         </section>
         <article class="card safe-note"><h2>تنبيه أمني</h2><p>لن نحفظ كلمات مرور الموظفين في هذا السجل. تطبيق الصلاحيات الفعلية يحتاج تسجيل دخول آمنًا والتحقق من الصلاحية على الخادم، وليس إخفاء القوائم في المتصفح فقط.</p></article>
       </section>
+      <section class="view" id="maintenance-view">
+        <section class="hero compact"><p class="eyebrow">الدعم الفني</p><h1>تيكتات الصيانة</h1><p>سجل طلبات الأعطال والصيانة ومتابعة حالتها. السجل محلي في هذا المتصفح، ولا يرسل تنبيهات أو أوامر للأجهزة.</p></section>
+        <section class="layout">
+          <article class="card form-card"><h2>فتح تيكت صيانة</h2><form id="ticket-form">
+            <label for="ticket-title">عنوان المشكلة</label><input id="ticket-title" required maxlength="100" placeholder="مثال: انقطاع الإنترنت في العمارة" />
+            <label for="ticket-customer">اسم المشترك / الموقع</label><input id="ticket-customer" required maxlength="100" placeholder="اسم المشترك أو الموقع" />
+            <label for="ticket-device">الجهاز المرتبط (اختياري)</label><input id="ticket-device" maxlength="100" placeholder="اسم الراوتر أو الجهاز" />
+            <label for="ticket-priority">الأولوية</label><select id="ticket-priority"><option value="normal">عادية</option><option value="high">عالية</option><option value="urgent">عاجلة</option><option value="low">منخفضة</option></select>
+            <label for="ticket-status">الحالة</label><select id="ticket-status"><option value="open">مفتوحة</option><option value="working">قيد العمل</option><option value="waiting">بانتظار قطع غيار / العميل</option><option value="closed">مغلقة</option></select>
+            <label for="ticket-notes">وصف المشكلة / ملاحظات</label><textarea id="ticket-notes" rows="4" maxlength="1000" placeholder="اكتب تفاصيل العطل وما تم عمله"></textarea>
+            <button class="primary full" type="submit">حفظ تيكت الصيانة</button>
+          </form></article>
+          <article class="card inventory"><div class="section-heading"><div><h2>سجل تيكتات الصيانة</h2><p id="ticket-count">لا توجد تيكتات بعد</p></div><input id="ticket-search" type="search" placeholder="بحث في التيكتات" aria-label="بحث في تيكتات الصيانة" /></div>
+            <div id="ticket-empty" class="empty-state">افتح أول تيكت صيانة ليظهر هنا.</div>
+            <div class="table-wrap"><table id="ticket-table" class="hidden"><thead><tr><th>رقم</th><th>المشكلة</th><th>المشترك / الموقع</th><th>الأولوية</th><th>الحالة</th><th>تاريخ الفتح</th><th>ملاحظات</th><th>إجراء</th></tr></thead><tbody id="ticket-list"></tbody></table></div>
+          </article>
+        </section>
+      </section>
+
+      <section class="view" id="mikrotik-view">
+        <section class="hero compact"><p class="eyebrow">إدارة أجهزة الشبكة</p><h1>الميكروتيك</h1><p>سجل مخصص لأجهزة MikroTik وعناوين الوصول ومعلوماتها الأساسية. الاتصال الفعلي وفحص الحالة وتنفيذ أوامر RouterOS غير مفعّل في هذه المرحلة.</p></section>
+        <section class="layout">
+          <article class="card form-card"><h2>إضافة جهاز MikroTik</h2><form id="mikrotik-form">
+            <label for="mikrotik-name">اسم الجهاز</label><input id="mikrotik-name" required maxlength="80" placeholder="مثال: Hesbah-Router" />
+            <label for="mikrotik-model">الموديل</label><input id="mikrotik-model" required maxlength="80" placeholder="مثال: RB750GL" />
+            <label for="mikrotik-ip">عنوان IP</label><input id="mikrotik-ip" required inputmode="decimal" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)$" placeholder="10.50.60.1" title="أدخل عنوان IPv4 صحيحًا" />
+            <label for="mikrotik-location">الموقع</label><input id="mikrotik-location" maxlength="100" placeholder="السنترال / العمارة" />
+            <label for="mikrotik-version">إصدار RouterOS (اختياري)</label><input id="mikrotik-version" maxlength="40" placeholder="مثال: 6.49.16" />
+            <label for="mikrotik-access">طريقة الوصول المخططة</label><select id="mikrotik-access"><option value="tailscale">Tailscale / VPN</option><option value="lan">الشبكة المحلية</option><option value="other">طريقة أخرى</option></select>
+            <label for="mikrotik-status">الحالة المسجلة يدويًا</label><select id="mikrotik-status"><option value="unknown">غير مفحوص</option><option value="online">متصل (تسجيل يدوي)</option><option value="offline">غير متصل (تسجيل يدوي)</option></select>
+            <button class="primary full" type="submit">حفظ جهاز MikroTik</button>
+          </form><p class="security-hint">لا تدخل كلمات المرور أو مفاتيح الوصول هنا. حالة الاتصال يدوية وليست فحصًا حيًا.</p></article>
+          <article class="card inventory"><div class="section-heading"><div><h2>أجهزة MikroTik المسجلة</h2><p id="mikrotik-count">لا توجد أجهزة بعد</p></div><input id="mikrotik-search" type="search" placeholder="بحث بالاسم أو IP أو الموديل" aria-label="بحث في أجهزة MikroTik" /></div>
+            <div id="mikrotik-empty" class="empty-state">أضف أول جهاز MikroTik ليظهر هنا.</div>
+            <div class="table-wrap"><table id="mikrotik-table" class="hidden"><thead><tr><th>الاسم</th><th>الموديل</th><th>IP</th><th>الموقع</th><th>إصدار RouterOS</th><th>الوصول</th><th>الحالة المسجلة</th><th>إجراء</th></tr></thead><tbody id="mikrotik-list"></tbody></table></div>
+          </article>
+        </section>
+      </section>
+
     </main>
     <footer>Powered by Hesbah</footer>
     <template id="device-row-template">

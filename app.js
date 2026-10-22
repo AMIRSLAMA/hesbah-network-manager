@@ -185,3 +185,60 @@ renderCompany();
 render();
 renderUsers();
 renderActivity();
+
+
+/* Maintenance tickets: local tracking only; no network actions. */
+const ticketsKey="hesbah-maintenance-tickets-v1";
+let maintenanceTickets=JSON.parse(localStorage.getItem(ticketsKey)||"[]");
+const ticketLabels={low:"منخفضة",normal:"عادية",high:"عالية",urgent:"عاجلة"};
+const ticketStatusLabels={open:"مفتوحة",working:"قيد العمل",waiting:"بانتظار",closed:"مغلقة"};
+const saveTickets=()=>localStorage.setItem(ticketsKey,JSON.stringify(maintenanceTickets));
+function renderTickets(){
+ const body=document.querySelector("#ticket-list"), term=document.querySelector("#ticket-search").value.trim().toLowerCase();
+ body.replaceChildren();
+ const shown=maintenanceTickets.filter(x=>[x.number,x.title,x.customer,x.device,x.notes,ticketLabels[x.priority],ticketStatusLabels[x.status]].some(v=>String(v||"").toLowerCase().includes(term)));
+ shown.forEach(item=>{
+  const row=buildRow([item.number,item.title,item.customer,item.priority?ticketLabels[item.priority]: "عادية",ticketStatusLabels[item.status]||item.status,item.createdAt,item.notes||"—"],()=>{
+   maintenanceTickets=maintenanceTickets.filter(x=>x.id!==item.id);saveTickets();logActivity("حذف تيكت صيانة",item.number+" — "+item.title);renderTickets();
+  },"حذف تيكت الصيانة؟");
+  body.append(row);
+ });
+ document.querySelector("#ticket-count").textContent=maintenanceTickets.length?maintenanceTickets.length+" تيكت صيانة":"لا توجد تيكتات بعد";
+ document.querySelector("#ticket-table").classList.toggle("hidden",shown.length===0);
+ document.querySelector("#ticket-empty").classList.toggle("hidden",shown.length!==0);
+ document.querySelector("#ticket-empty").textContent=maintenanceTickets.length&&!shown.length?"لا توجد نتائج مطابقة للبحث.":"افتح أول تيكت صيانة ليظهر هنا.";
+}
+document.querySelector("#ticket-form").addEventListener("submit",e=>{
+ e.preventDefault();
+ const item={id:crypto.randomUUID(),number:"MT-"+Date.now().toString().slice(-8),title:document.querySelector("#ticket-title").value.trim(),customer:document.querySelector("#ticket-customer").value.trim(),device:document.querySelector("#ticket-device").value.trim(),priority:document.querySelector("#ticket-priority").value,status:document.querySelector("#ticket-status").value,notes:document.querySelector("#ticket-notes").value.trim(),createdAt:new Date().toLocaleDateString("ar-EG")};
+ maintenanceTickets.unshift(item);saveTickets();e.target.reset();renderTickets();logActivity("فتح تيكت صيانة",item.number+" — "+item.title);
+});
+document.querySelector("#ticket-search").addEventListener("input",renderTickets);
+renderTickets();
+
+/* MikroTik inventory: metadata only, never stores credentials or sends commands. */
+const mikrotikKey="hesbah-mikrotik-devices-v1";
+let mikrotikDevices=JSON.parse(localStorage.getItem(mikrotikKey)||"[]");
+const mikrotikAccessLabels={tailscale:"Tailscale / VPN",lan:"الشبكة المحلية",other:"أخرى"};
+const mikrotikStatusLabels={unknown:"غير مفحوص",online:"متصل (يدوي)",offline:"غير متصل (يدوي)"};
+const saveMikrotik=()=>localStorage.setItem(mikrotikKey,JSON.stringify(mikrotikDevices));
+function renderMikrotik(){
+ const body=document.querySelector("#mikrotik-list"),term=document.querySelector("#mikrotik-search").value.trim().toLowerCase();body.replaceChildren();
+ const shown=mikrotikDevices.filter(x=>[x.name,x.model,x.ip,x.location,x.version,mikrotikAccessLabels[x.access],mikrotikStatusLabels[x.status]].some(v=>String(v||"").toLowerCase().includes(term)));
+ shown.forEach(item=>body.append(buildRow([item.name,item.model,item.ip,item.location,item.version||"—",mikrotikAccessLabels[item.access],mikrotikStatusLabels[item.status]],()=>{
+  mikrotikDevices=mikrotikDevices.filter(x=>x.id!==item.id);saveMikrotik();logActivity("حذف جهاز MikroTik",item.name);renderMikrotik();
+ },"حذف جهاز MikroTik؟")));
+ document.querySelector("#mikrotik-count").textContent=mikrotikDevices.length?mikrotikDevices.length+" أجهزة مسجلة":"لا توجد أجهزة بعد";
+ document.querySelector("#mikrotik-table").classList.toggle("hidden",shown.length===0);
+ document.querySelector("#mikrotik-empty").classList.toggle("hidden",shown.length!==0);
+ document.querySelector("#mikrotik-empty").textContent=mikrotikDevices.length&&!shown.length?"لا توجد نتائج مطابقة للبحث.":"أضف أول جهاز MikroTik ليظهر هنا.";
+}
+document.querySelector("#mikrotik-form").addEventListener("submit",e=>{
+ e.preventDefault();
+ const item={id:crypto.randomUUID(),name:document.querySelector("#mikrotik-name").value.trim(),model:document.querySelector("#mikrotik-model").value.trim(),ip:document.querySelector("#mikrotik-ip").value.trim(),location:document.querySelector("#mikrotik-location").value.trim(),version:document.querySelector("#mikrotik-version").value.trim(),access:document.querySelector("#mikrotik-access").value,status:document.querySelector("#mikrotik-status").value};
+ const duplicate=mikrotikDevices.some(x=>x.ip===item.ip);
+ if(duplicate&&!confirm("عنوان IP مسجل بالفعل. هل تريد تسجيل جهاز آخر بنفس العنوان؟"))return;
+ mikrotikDevices.unshift(item);saveMikrotik();e.target.reset();renderMikrotik();logActivity("إضافة جهاز MikroTik",item.name+" — "+item.ip);
+});
+document.querySelector("#mikrotik-search").addEventListener("input",renderMikrotik);
+renderMikrotik();
