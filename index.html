@@ -273,6 +273,7 @@
               <button class="primary" type="submit">فتح داخل البرنامج</button>
             </div>
           </form>
+          <div class="internal-browser-tabs-bar"><div id="internal-browser-tabs" class="internal-browser-tabs" role="tablist" aria-label="تبويبات المتصفح"></div><button class="primary" id="internal-browser-new-tab" type="button">+ تبويب جديد</button></div>
           <div class="internal-browser-controls">
             <button class="secondary" id="internal-browser-back" type="button" disabled>رجوع</button>
             <button class="secondary" id="internal-browser-forward" type="button" disabled>تقدم</button>
@@ -280,7 +281,7 @@
             <span id="internal-browser-status" role="status" aria-live="polite">اختر موقعًا للبدء.</span>
           </div>
           <div class="internal-browser-frame-wrap">
-            <iframe id="internal-browser-frame" title="المتصفح الداخلي لتجربة المواقع" referrerpolicy="strict-origin-when-cross-origin" allow="clipboard-read; clipboard-write"></iframe>
+            <div id="internal-browser-panes" class="internal-browser-panes"></div>
             <div id="internal-browser-empty" class="internal-browser-empty"><span aria-hidden="true">🌐</span><strong>المتصفح الداخلي جاهز للتجربة</strong><p>اكتب عنوان موقع أو اختر أحد الاختصارات بالأعلى.</p></div>
           </div>
           <p class="security-hint">هذه تجربة عرض داخل الصفحة وليست متصفحًا كاملًا. إذا ظهر إطار فارغ أو رسالة رفض، فغالبًا الموقع يمنع التضمين أو أن المتصفح حظر اتصالًا غير آمن. لن نفتح نافذة خارجية تلقائيًا.</p>
