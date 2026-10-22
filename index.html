@@ -24,6 +24,8 @@
       <button class="nav-item" type="button" data-view="routers">الراوترات</button>
       <button class="nav-item" type="button" data-view="users">المشتركون</button>
       <button class="nav-item" type="button" data-view="plans">الباقات</button>
+      <button class="nav-item" type="button" data-view="subscriptions">اشتراكات العملاء</button>
+      <button class="nav-item" type="button" data-view="staff">الفريق والصلاحيات</button>
       <button class="nav-item" type="button" data-view="collections">التحصيلات</button>
       <button class="nav-item" type="button" data-view="reports">التقارير</button>
       <button class="nav-item" type="button" data-view="network-settings">إعدادات الشبكة</button>
@@ -164,6 +166,34 @@
         <section class="hero compact"><p class="eyebrow">بوابة المالك</p><h1>اشتراك الشركة</h1><p>واجهة الاشتراك جاهزة؛ الدفع الإلكتروني وتفعيل الخطة سيُربطان لاحقًا بخدمة المالك.</p></section>
         <section class="subscription-grid"><article class="card"><p class="stat-label">الخطة الحالية</p><strong class="stat-value">تجريبية</strong><p>لا توجد مدفوعات أو فواتير في النسخة المحلية.</p></article><article class="card"><p class="stat-label">حالة الحساب</p><strong class="stat-value success">نشط محليًا</strong><p>الحالة ستُدار من لوحة مالك Hesbah بعد الربط.</p></article><article class="card"><p class="stat-label">حماية الشبكة</p><strong class="stat-value">غير مرتبط</strong><p>تم تأجيل الوصول للخادم والأجهزة عمدًا.</p></article></section>
         <article class="card safe-note"><h2>حدود المرحلة الحالية</h2><p>يمكنك الآن تنظيم السجل والفريق والمتابعة محليًا. ربط الأجهزة، قراءة حالتها، فتح واجهاتها، أو إرسال أوامر إدارية لن يبدأ قبل مراجعة الخادم والصلاحيات وسجل التدقيق المركزي.</p></article>
+      </section>
+
+      <section class="view" id="subscriptions-view">
+        <section class="hero compact"><p class="eyebrow">متابعة الخدمة</p><h1>اشتراكات العملاء</h1><p>سجل يدوي لمواعيد الاشتراك والتجديد والإيقاف. لن يتم فصل أو تشغيل أي حساب PPPoE تلقائيًا.</p></section>
+        <section class="layout">
+          <article class="card form-card"><h2>تسجيل اشتراك</h2><form id="subscription-form">
+            <label for="sub-customer">اسم المشترك</label><input id="sub-customer" required maxlength="80" placeholder="اسم المشترك" />
+            <label for="sub-plan">الباقة</label><input id="sub-plan" required maxlength="60" list="plans" placeholder="مثال: 10 ميجا" />
+            <label for="sub-start">تاريخ بداية الاشتراك</label><input id="sub-start" required type="date" />
+            <label for="sub-due">تاريخ التجديد / الاستحقاق</label><input id="sub-due" required type="date" />
+            <label for="sub-status">حالة الاشتراك</label><select id="sub-status"><option value="active">نشط</option><option value="pending">بانتظار التفعيل</option><option value="suspended">موقوف يدويًا</option></select>
+            <button class="primary full" type="submit">حفظ الاشتراك</button>
+          </form></article>
+          <article class="card inventory"><div class="section-heading"><div><h2>سجل الاشتراكات</h2><p id="sub-count">لا توجد اشتراكات بعد</p></div></div><div id="sub-empty" class="empty-state">أضف أول اشتراك ليظهر هنا.</div><div class="table-wrap"><table id="sub-table" class="hidden"><thead><tr><th>المشترك</th><th>الباقة</th><th>البداية</th><th>الاستحقاق</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody id="sub-list"></tbody></table></div></article>
+        </section>
+      </section>
+      <section class="view" id="staff-view">
+        <section class="hero compact"><p class="eyebrow">إدارة فريق العمل</p><h1>الفريق والصلاحيات</h1><p>تجهيز سجل الموظفين والأدوار المقترحة. هذه الإعدادات محلية للعرض فقط ولا تمنح أو تمنع دخولًا حقيقيًا حتى إضافة تسجيل دخول وخادم صلاحيات.</p></section>
+        <section class="layout">
+          <article class="card form-card"><h2>إضافة عضو فريق</h2><form id="staff-form">
+            <label for="staff-name">اسم الموظف</label><input id="staff-name" required maxlength="80" placeholder="اسم الموظف" />
+            <label for="staff-role">الدور المقترح</label><select id="staff-role"><option value="admin">مدير النظام</option><option value="network">مسؤول الشبكة</option><option value="collections">مسؤول التحصيلات</option><option value="support">خدمة العملاء</option><option value="viewer">مشاهدة فقط</option></select>
+            <label for="staff-phone">رقم الهاتف (اختياري)</label><input id="staff-phone" maxlength="30" inputmode="tel" placeholder="رقم الهاتف" />
+            <button class="primary full" type="submit">إضافة عضو الفريق</button>
+          </form></article>
+          <article class="card inventory"><div class="section-heading"><div><h2>أعضاء الفريق</h2><p id="staff-count">لا يوجد أعضاء بعد</p></div></div><div id="staff-empty" class="empty-state">أضف أول عضو فريق ليظهر هنا.</div><div class="table-wrap"><table id="staff-table" class="hidden"><thead><tr><th>الاسم</th><th>الدور</th><th>الهاتف</th><th>إجراء</th></tr></thead><tbody id="staff-list"></tbody></table></div></article>
+        </section>
+        <article class="card safe-note"><h2>تنبيه أمني</h2><p>لن نحفظ كلمات مرور الموظفين في هذا السجل. تطبيق الصلاحيات الفعلية يحتاج تسجيل دخول آمنًا والتحقق من الصلاحية على الخادم، وليس إخفاء القوائم في المتصفح فقط.</p></article>
       </section>
     </main>
     <footer>Powered by Hesbah</footer>
