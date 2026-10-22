@@ -249,6 +249,12 @@ const whatsappKey="hesbah-whatsapp-groups-v1";
 let whatsappGroups=JSON.parse(localStorage.getItem(whatsappKey)||"[]");
 const whatsappCategories={maintenance:"الصيانة",subscribers:"المشتركين",technicians:"الفنيين",management:"إدارة الشبكة",other:"أخرى"};
 const saveWhatsappGroups=()=>localStorage.setItem(whatsappKey,JSON.stringify(whatsappGroups));
+/* Reuse one named compact popup for WhatsApp links. The browser may choose a tab instead. */
+function openWhatsappMiniWindow(url){
+ const features="popup=yes,width=480,height=720,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=yes,status=no";
+ const popup=window.open(url,"hesbahWhatsappMini",features);
+ if(popup){popup.focus();}else{alert("المتصفح منع النافذة الصغيرة. اسمح بالنوافذ المنبثقة لهذا الموقع ثم جرّب مرة أخرى.");}
+}
 function renderWhatsappGroups(){
  const body=document.querySelector("#whatsapp-list"),term=document.querySelector("#whatsapp-search").value.trim().toLowerCase();
  body.replaceChildren();
@@ -256,8 +262,9 @@ function renderWhatsappGroups(){
  shown.forEach(item=>{
   const row=document.createElement("tr");
   [item.name,whatsappCategories[item.category]||"أخرى",item.description||"—"].forEach(value=>{const cell=document.createElement("td");cell.textContent=value;row.append(cell);});
-  const linkCell=document.createElement("td"),link=document.createElement("a");
-  link.href=item.link;link.target="_blank";link.rel="noopener noreferrer";link.textContent="فتح واتساب";linkCell.append(link);row.append(linkCell);
+  const linkCell=document.createElement("td"),openButton=document.createElement("button");
+  openButton.type="button";openButton.className="link whatsapp-open";openButton.textContent="فتح في نافذة صغيرة";
+  openButton.addEventListener("click",()=>openWhatsappMiniWindow(item.link));linkCell.append(openButton);row.append(linkCell);
   const dateCell=document.createElement("td");dateCell.textContent=item.createdAt||"—";row.append(dateCell);
   const actions=document.createElement("td");actions.className="row-actions";
   const edit=document.createElement("button");edit.type="button";edit.className="link";edit.textContent="تعديل";
