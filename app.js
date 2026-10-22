@@ -153,6 +153,33 @@ const originalUpdateDashboard=updateDashboard;
 updateDashboard=function(){originalUpdateDashboard();const reportDevices=document.querySelector("#report-devices");if(reportDevices)reportDevices.textContent=devices.length;const reportUsers=document.querySelector("#report-users");if(reportUsers)reportUsers.textContent=users.length;};
 renderRouters();renderPlans();renderPayments();renderReports();
 
+
+/* Customer subscriptions and staff directory: local preparation only. */
+const subscriptionsKey="hesbah-customer-subscriptions-v1", staffKey="hesbah-staff-v1";
+let customerSubscriptions=JSON.parse(localStorage.getItem(subscriptionsKey)||"[]");
+let staffMembers=JSON.parse(localStorage.getItem(staffKey)||"[]");
+const saveCustomerSubscriptions=()=>localStorage.setItem(subscriptionsKey,JSON.stringify(customerSubscriptions));
+const saveStaff=()=>localStorage.setItem(staffKey,JSON.stringify(staffMembers));
+const subLabels={active:"نشط",pending:"بانتظار التفعيل",suspended:"موقوف يدويًا"};
+const staffRoleLabels={admin:"مدير النظام",network:"مسؤول الشبكة",collections:"مسؤول التحصيلات",support:"خدمة العملاء",viewer:"مشاهدة فقط"};
+function renderSubscriptions(){
+ const body=document.querySelector("#sub-list");body.replaceChildren();
+ customerSubscriptions.forEach(item=>body.append(buildRow([item.customer,item.plan,item.start,item.due,subLabels[item.status]||item.status],()=>{customerSubscriptions=customerSubscriptions.filter(x=>x.id!==item.id);saveCustomerSubscriptions();logActivity("حذف اشتراك عميل",item.customer);renderSubscriptions();},`حذف اشتراك «${item.customer}» من السجل؟`)));
+ document.querySelector("#sub-count").textContent=customerSubscriptions.length?`${customerSubscriptions.length} اشتراكات مسجلة`:"لا توجد اشتراكات بعد";
+ document.querySelector("#sub-table").classList.toggle("hidden",!customerSubscriptions.length);document.querySelector("#sub-empty").classList.toggle("hidden",!!customerSubscriptions.length);
+}
+document.querySelector("#sub-start").value=new Date().toISOString().slice(0,10);
+document.querySelector("#sub-due").value=new Date(Date.now()+30*86400000).toISOString().slice(0,10);
+document.querySelector("#subscription-form").addEventListener("submit",e=>{e.preventDefault();const item={id:crypto.randomUUID(),customer:document.querySelector("#sub-customer").value.trim(),plan:document.querySelector("#sub-plan").value.trim(),start:document.querySelector("#sub-start").value,due:document.querySelector("#sub-due").value,status:document.querySelector("#sub-status").value};if(item.due<item.start){alert("تاريخ الاستحقاق يجب أن يكون في نفس يوم البداية أو بعده.");return;}customerSubscriptions.unshift(item);saveCustomerSubscriptions();e.target.reset();document.querySelector("#sub-start").value=new Date().toISOString().slice(0,10);document.querySelector("#sub-due").value=new Date(Date.now()+30*86400000).toISOString().slice(0,10);renderSubscriptions();logActivity("إضافة اشتراك عميل",`${item.customer} — ${item.plan}`);});
+function renderStaff(){
+ const body=document.querySelector("#staff-list");body.replaceChildren();
+ staffMembers.forEach(item=>body.append(buildRow([item.name,staffRoleLabels[item.role]||item.role,item.phone],()=>{staffMembers=staffMembers.filter(x=>x.id!==item.id);saveStaff();logActivity("حذف عضو فريق",item.name);renderStaff();},`حذف عضو الفريق «${item.name}» من السجل؟`)));
+ document.querySelector("#staff-count").textContent=staffMembers.length?`${staffMembers.length} أعضاء مسجلون`:"لا يوجد أعضاء بعد";
+ document.querySelector("#staff-table").classList.toggle("hidden",!staffMembers.length);document.querySelector("#staff-empty").classList.toggle("hidden",!!staffMembers.length);
+}
+document.querySelector("#staff-form").addEventListener("submit",e=>{e.preventDefault();const item={id:crypto.randomUUID(),name:document.querySelector("#staff-name").value.trim(),role:document.querySelector("#staff-role").value,phone:document.querySelector("#staff-phone").value.trim()};staffMembers.unshift(item);saveStaff();e.target.reset();renderStaff();logActivity("إضافة عضو فريق",`${item.name} — ${staffRoleLabels[item.role]}`);});
+renderSubscriptions();renderStaff();
+
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
 renderCompany();
 render();
